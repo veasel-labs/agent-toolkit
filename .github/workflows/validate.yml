@@ -18,5 +18,7 @@ jobs:
           python-version: "3.12"
       - name: Registry validator (pins, trust, permissions, drift)
         run: python3 scripts/validate_registry.py
+      - name: Generated manifests drift check
+        run: python3 scripts/generate_manifests.py --check
       - name: Tests
         run: python3 -m unittest discover -s tests -v

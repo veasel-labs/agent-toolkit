@@ -1,0 +1,27 @@
+{
+  "name": "veasel",
+  "plugins": [
+    {
+      "id": "agent-toolkit-core",
+      "license": "MIT",
+      "opt_in_required": false,
+      "permissions": {
+        "dangerous_permissions": "[]",
+        "hooks": "[session-start-context]",
+        "mcp": "[github]",
+        "network": "false",
+        "shell": "false"
+      },
+      "source": {
+        "path": "plugins/agent-toolkit-core",
+        "ref": "v1.49.0",
+        "repo": "ulises-jeremias/agent-toolkit",
+        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1",
+        "type": "github"
+      },
+      "trust": "verified",
+      "version": "1.49.0"
+    }
+  ],
+  "version": 1
+}

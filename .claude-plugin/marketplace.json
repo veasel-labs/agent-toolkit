@@ -1,28 +1,28 @@
 {
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/marketplace.schema.json",
+  "metadata": {
+    "description": "Generated from registry/registry.yaml by scripts/generate_manifests.py \u2014 do not hand-edit.",
+    "pluginRoot": "./plugins",
+    "version": "0.1.0"
+  },
   "name": "veasel",
   "owner": {
     "name": "veasel-labs",
     "url": "https://github.com/veasel-labs"
   },
-  "metadata": {
-    "description": "Official Veasel plugin distribution and community marketplace. Generated from registry/registry.yaml — do not hand-edit; see scripts in veasel-labs/agent-toolkit.",
-    "version": "0.1.0",
-    "pluginRoot": "./plugins"
-  },
   "plugins": [
     {
+      "category": "productivity",
+      "description": "",
       "name": "agent-toolkit-core",
       "source": {
-        "source": "github",
-        "repo": "ulises-jeremias/agent-toolkit",
+        "path": "plugins/agent-toolkit-core",
         "ref": "v1.49.0",
-        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1"
+        "repo": "ulises-jeremias/agent-toolkit",
+        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1",
+        "source": "github"
       },
-      "description": "Core orchestration skills from the maintainer's personal toolkit, published by reference.",
-      "version": "1.49.0",
-      "category": "productivity",
-      "tags": ["core", "orchestrator"]
+      "tags": [],
+      "version": "1.49.0"
     }
   ]
 }
