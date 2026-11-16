@@ -1,0 +1,28 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/marketplace.schema.json",
+  "name": "veasel",
+  "owner": {
+    "name": "veasel-labs",
+    "url": "https://github.com/veasel-labs"
+  },
+  "metadata": {
+    "description": "Official Veasel plugin distribution and community marketplace. Generated from registry/registry.yaml — do not hand-edit; see scripts in veasel-labs/agent-toolkit.",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "agent-toolkit-core",
+      "source": {
+        "source": "github",
+        "repo": "ulises-jeremias/agent-toolkit",
+        "ref": "v1.49.0",
+        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1"
+      },
+      "description": "Core orchestration skills from the maintainer's personal toolkit, published by reference.",
+      "version": "1.49.0",
+      "category": "productivity",
+      "tags": ["core", "orchestrator"]
+    }
+  ]
+}

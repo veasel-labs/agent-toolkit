@@ -1,0 +1,44 @@
+# Veasel community plugin registry — Git-backed, review-gated.
+#
+# Each entry points at an EXTERNALLY maintained plugin; this repo never
+# copies community plugin source. Provenance is pinned by commit SHA
+# (borrowed from Claude Code marketplace `source` objects and Cursor's
+# review-per-update model): a version bump requires a reviewed PR that
+# changes `ref`/`sha` together. `upstream`/`upstream-lock` semantics
+# follow schemas/upstream*.schema.json copied from agent-toolkit.
+#
+# Fields:
+#   id          kebab-case, unique in this file
+#   name        display name
+#   description one line
+#   source      { type: github|git-subdir|relative, repo?, url?, path?, ref, sha }
+#               relative = curated plugin bundled in THIS repo under plugins/
+#   version     upstream plugin version at the pinned sha
+#   license     SPDX id as declared by upstream (verified at review)
+#   provenance  { submitted_by, reviewed_by, review: docs/REVIEW_POLICY.md }
+#   targets     client manifests generated for these targets
+version: 1
+plugins:
+  - id: agent-toolkit-core
+    name: Agent Toolkit Core (personal collection)
+    description: Core orchestration skills from the maintainer's personal toolkit, published into the Veasel catalog by reference — source stays in ulises-jeremias/agent-toolkit.
+    source:
+      type: github
+      repo: ulises-jeremias/agent-toolkit
+      path: plugins/agent-toolkit-core
+      ref: v1.49.0
+      sha: ec993aa514bf47a28abf728a6621dbe349df72b1
+    version: 1.49.0
+    license: MIT
+    provenance:
+      submitted_by: ulises-jeremias
+      reviewed_by: null
+      review: pending-initial-review
+    trust: verified
+    permissions:
+      shell: false
+      network: false
+      mcp: [github]
+      hooks: [session-start-context]
+      dangerous_permissions: []
+    targets: [claude-code, cursor, codex, veasel]
