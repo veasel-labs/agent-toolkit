@@ -1,0 +1,49 @@
+name: drift
+
+on:
+  schedule:
+    - cron: "37 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bump drifted pins
+        id: drift
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if python3 scripts/check_drift.py --update; then
+            python3 scripts/generate_manifests.py
+            if git diff --quiet; then
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Open reviewed version-bump PR
+        if: steps.drift.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="drift/$(date +%Y%m%d-%H%M%S)"
+          git config user.name "veasel-catalog-bot"
+          git config user.email "catalog@veasel-labs.invalid"
+          git checkout -b "$branch"
+          git add registry/registry.yaml .claude-plugin/marketplace.json .cursor-plugin/marketplace.json generated/veasel-catalog.json
+          git commit -m "chore(registry): bump drifted community plugin pins"
+          git push origin "HEAD:refs/heads/$branch"
+          gh pr create --title "chore(registry): bump drifted community plugin pins" \
+            --body "Automated drift detection (scripts/check_drift.py). Pins move ref+sha together to the latest upstream release tag. Requires human review per docs/REVIEW_POLICY.md — never auto-merge." \
+            --head "$branch" --base main
