@@ -9,6 +9,7 @@
 Run: python3 -m unittest discover -s tests -v
 """
 import copy
+import json
 import importlib.util
 import pathlib
 import unittest
@@ -159,3 +160,23 @@ class LiveRegistryTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BundledPluginTest(unittest.TestCase):
+    def test_essentials_manifest_shape(self):
+        manifest = json.loads(
+            (ROOT / "plugins" / "veasel-essentials" / ".claude-plugin" / "plugin.json").read_text())
+        for key in ("name", "version", "description", "license"):
+            self.assertIn(key, manifest)
+        self.assertEqual(manifest["name"], "veasel-essentials")
+        skill = ROOT / "plugins" / "veasel-essentials" / "skills" / "output-handshake" / "SKILL.md"
+        self.assertTrue(skill.is_file())
+
+    def test_bundled_pending_is_not_installable(self):
+        entries = validate.parse_registry(
+            (ROOT / "registry" / "registry.yaml").read_text())
+        essentials = [e for e in entries if e["id"] == "veasel-essentials"]
+        self.assertEqual(len(essentials), 1)
+        self.assertFalse(validate.is_installable(essentials[0]))
+        self.assertNotIn(essentials[0],
+                         generate.listed(entries))

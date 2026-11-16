@@ -43,3 +43,25 @@ plugins:
       hooks: [session-start-context]
       dangerous_permissions: []
     targets: [claude-code, cursor, veasel]  # codex/copilot: format not yet verified, not generated
+  - id: veasel-essentials
+    name: Veasel Essentials (official, bundled)
+    description: Minimal official plugin with the output-handshake skill; usable fully offline. See docs/OFFLINE_SKILLS.md.
+    source:
+      type: relative
+      path: plugins/veasel-essentials
+      ref: main
+      sha: 0000000000000000000000000000000000000000
+    version: 0.1.0
+    license: MIT
+    provenance:
+      submitted_by: ulises-jeremias
+      reviewed_by: null
+      review: pending-initial-review
+    trust: first-party
+    permissions:
+      shell: false
+      network: false
+      mcp: []
+      hooks: []
+      dangerous_permissions: []
+    targets: [claude-code, veasel]
