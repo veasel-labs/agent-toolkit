@@ -20,20 +20,15 @@ import pathlib
 import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-from validate_registry import parse_registry, ROOT  # noqa: E402
-
-EXCLUDED_REVIEW = {"revoked"}
-EXCLUDED_TRUST = {"experimental"}
+from validate_registry import parse_registry, is_installable, ROOT  # noqa: E402
 
 
 def listed(entries):
-    out = []
-    for e in entries:
-        review = e.get("review", "")
-        if review in EXCLUDED_REVIEW or e.get("trust") in EXCLUDED_TRUST:
-            continue
-        out.append(e)
-    return sorted(out, key=lambda e: e["id"])
+    # Client manifests publish ONLY reviewed, installable entries.
+    # Pending/revoked entries fail closed: they exist in the registry
+    # for review, never in a generated marketplace.
+    return sorted((e for e in entries if is_installable(e)),
+                  key=lambda e: e["id"])
 
 
 def marketplace(entries, name):
@@ -72,13 +67,21 @@ def marketplace(entries, name):
 
 
 def veasel_catalog(entries):
+    # The Veasel catalog shows review state honestly: pending entries
+    # are visible for review but installable=false; revoked and
+    # experimental entries are excluded entirely.
     plugins = []
-    for e in listed(entries):
+    for e in sorted(entries, key=lambda x: x["id"]):
+        review = e.get("provenance", {}).get("review")
+        if review == "revoked" or e.get("trust") == "experimental":
+            continue
         plugins.append({
             "id": e["id"],
             "version": e.get("version", ""),
             "license": e.get("license", ""),
             "trust": e.get("trust", ""),
+            "review": review,
+            "installable": is_installable(e),
             "opt_in_required": e.get("trust") == "community",
             "source": e.get("source", {}),
             "permissions": e.get("permissions", {}),
