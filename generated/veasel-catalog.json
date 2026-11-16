@@ -23,6 +23,28 @@
       },
       "trust": "community",
       "version": "1.49.0"
+    },
+    {
+      "id": "veasel-essentials",
+      "installable": false,
+      "license": "MIT",
+      "opt_in_required": false,
+      "permissions": {
+        "dangerous_permissions": "[]",
+        "hooks": "[]",
+        "mcp": "[]",
+        "network": "false",
+        "shell": "false"
+      },
+      "review": "pending-initial-review",
+      "source": {
+        "path": "plugins/veasel-essentials",
+        "ref": "main",
+        "sha": "0000000000000000000000000000000000000000",
+        "type": "relative"
+      },
+      "trust": "first-party",
+      "version": "0.1.0"
     }
   ],
   "version": 1

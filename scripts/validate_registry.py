@@ -71,6 +71,10 @@ def parse_registry(text):
     return entries
 
 
+def src_type(entry):
+    return entry.get("source", {}).get("type", "")
+
+
 def is_installable(entry):
     """Only reviewed, non-revoked entries may be published/installed."""
     return (entry.get("provenance", {}).get("review") == "approved"
@@ -102,10 +106,14 @@ def validate_entries(entries, resolved=None):
         if not prov.get("submitted_by"):
             errors.append(f"{eid}: provenance.submitted_by is required")
         # Fail closed: verified means a human actually reviewed it.
-        if trust in ("verified", "first-party") and review != "approved":
+        if trust == "verified" and review != "approved":
             errors.append(
                 f"{eid}: trust={trust} requires provenance.review=approved "
                 f"(got {review!r}); unreviewed entries must be community/experimental")
+        if trust == "first-party" and review != "approved" and src_type(e) != "relative":
+            errors.append(
+                f"{eid}: external first-party entries require provenance.review=approved "
+                f"(got {review!r}); only bundled relative sources may stay pending")
         if review == "approved" and prov.get("reviewed_by") in (None, "", "null"):
             errors.append(f"{eid}: approved entries must name provenance.reviewed_by")
         perms = e.get("permissions", {})
@@ -116,6 +124,11 @@ def validate_entries(entries, resolved=None):
             if key in perms and perms[key] not in ("true", "false"):
                 errors.append(f"{eid}: permissions.{key} must be true/false")
         src = e.get("source", {})
+        if src.get("type") == "relative":
+            if trust != "first-party":
+                errors.append(f"{eid}: relative (bundled) sources must be first-party")
+            if not src.get("path"):
+                errors.append(f"{eid}: relative source requires path")
         if src.get("type") in ("github", "git-subdir"):
             if not SHA_RE.match(src.get("sha", "")):
                 errors.append(f"{eid}: external source must pin a full 40-char sha")
