@@ -9,20 +9,5 @@
     "name": "veasel-labs",
     "url": "https://github.com/veasel-labs"
   },
-  "plugins": [
-    {
-      "category": "productivity",
-      "description": "",
-      "name": "agent-toolkit-core",
-      "source": {
-        "path": "plugins/agent-toolkit-core",
-        "ref": "v1.49.0",
-        "repo": "ulises-jeremias/agent-toolkit",
-        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1",
-        "source": "github"
-      },
-      "tags": [],
-      "version": "1.49.0"
-    }
-  ]
+  "plugins": []
 }

@@ -12,6 +12,7 @@
 #   name        display name
 #   description one line
 #   source      { type: github|git-subdir|relative, repo?, url?, path?, ref, sha }
+#               sha MUST be the resolved commit of ref (annotated tag -> its target commit, e.g. v1.49.0 -> 7bd44a7b...), verified with `gh api repos/<repo>/git/ref/tags/<ref>`; never a later main HEAD
 #               relative = curated plugin bundled in THIS repo under plugins/
 #   version     upstream plugin version at the pinned sha
 #   license     SPDX id as declared by upstream (verified at review)
@@ -27,18 +28,18 @@ plugins:
       repo: ulises-jeremias/agent-toolkit
       path: plugins/agent-toolkit-core
       ref: v1.49.0
-      sha: ec993aa514bf47a28abf728a6621dbe349df72b1
+      sha: 7bd44a7b4cc64afc4908b49977589666c1978920
     version: 1.49.0
     license: MIT
     provenance:
       submitted_by: ulises-jeremias
       reviewed_by: null
       review: pending-initial-review
-    trust: verified
+    trust: community
     permissions:
       shell: false
       network: false
       mcp: [github]
       hooks: [session-start-context]
       dangerous_permissions: []
-    targets: [claude-code, cursor, codex, veasel]
+    targets: [claude-code, cursor, veasel]  # codex/copilot: format not yet verified, not generated

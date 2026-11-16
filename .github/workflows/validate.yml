@@ -18,6 +18,10 @@ jobs:
           python-version: "3.12"
       - name: Registry validator (pins, trust, permissions, drift)
         run: python3 scripts/validate_registry.py
+      - name: Resolve pins against upstream (annotated tags dereferenced)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/validate_registry.py --resolve
       - name: Generated manifests drift check
         run: python3 scripts/generate_manifests.py --check
       - name: Tests

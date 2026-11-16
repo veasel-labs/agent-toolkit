@@ -3,8 +3,9 @@
   "plugins": [
     {
       "id": "agent-toolkit-core",
+      "installable": false,
       "license": "MIT",
-      "opt_in_required": false,
+      "opt_in_required": true,
       "permissions": {
         "dangerous_permissions": "[]",
         "hooks": "[session-start-context]",
@@ -12,14 +13,15 @@
         "network": "false",
         "shell": "false"
       },
+      "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-core",
         "ref": "v1.49.0",
         "repo": "ulises-jeremias/agent-toolkit",
-        "sha": "ec993aa514bf47a28abf728a6621dbe349df72b1",
+        "sha": "7bd44a7b4cc64afc4908b49977589666c1978920",
         "type": "github"
       },
-      "trust": "verified",
+      "trust": "community",
       "version": "1.49.0"
     }
   ],

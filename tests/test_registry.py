@@ -13,6 +13,14 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
 def registry_entries():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "validate_registry", ROOT / "scripts" / "validate_registry.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    parsed = mod.parse_registry((ROOT / "registry" / "registry.yaml").read_text())
+    if parsed:
+        return parsed
     text = (ROOT / "registry" / "registry.yaml").read_text()
     entries, current = [], None
     for line in text.splitlines():
@@ -52,6 +60,9 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(market["name"], "veasel")
         for plugin in market["plugins"]:
             self.assertIn(plugin["name"], by_id)
+            self.assertEqual(
+                by_id[plugin["name"]]["provenance"]["review"], "approved",
+                "marketplace must never publish unreviewed entries")
             entry = by_id[plugin["name"]]
             self.assertEqual(plugin["version"], entry["version"])
             src = plugin["source"]
