@@ -40,7 +40,6 @@
       "source": {
         "path": "plugins/veasel-essentials",
         "ref": "main",
-        "sha": "0000000000000000000000000000000000000000",
         "type": "relative"
       },
       "trust": "first-party",

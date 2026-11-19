@@ -172,6 +172,22 @@ class BundledPluginTest(unittest.TestCase):
         skill = ROOT / "plugins" / "veasel-essentials" / "skills" / "output-handshake" / "SKILL.md"
         self.assertTrue(skill.is_file())
 
+    def test_relative_source_must_not_declare_sha(self):
+        relative = entry(
+            id="bundled-demo", trust="first-party",
+            source={"type": "relative", "path": "plugins/demo", "ref": "main",
+                    "sha": "0" * 40},
+            provenance={"submitted_by": "alice", "reviewed_by": "null",
+                        "review": "pending-initial-review"})
+        errors = validate.validate_entries([relative])
+        self.assertTrue(any("must not declare a sha" in e for e in errors), errors)
+
+    def test_all_zero_external_sha_fails(self):
+        zero = entry(source={"type": "github", "repo": "example/demo",
+                             "ref": "v1.0.0", "sha": "0" * 40})
+        errors = validate.validate_entries([zero])
+        self.assertTrue(any("40-char sha" in e for e in errors), errors)
+
     def test_bundled_pending_is_not_installable(self):
         entries = validate.parse_registry(
             (ROOT / "registry" / "registry.yaml").read_text())

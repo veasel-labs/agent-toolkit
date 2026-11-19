@@ -46,11 +46,13 @@ plugins:
   - id: veasel-essentials
     name: Veasel Essentials (official, bundled)
     description: Minimal official plugin with the output-handshake skill; usable fully offline. See docs/OFFLINE_SKILLS.md.
+    # Relative (bundled) sources carry no sha: their content is pinned by
+    # this repository's own commit, so a sha field would be self-referential
+    # and misleading. The validator rejects a sha on relative sources.
     source:
       type: relative
       path: plugins/veasel-essentials
       ref: main
-      sha: 0000000000000000000000000000000000000000
     version: 0.1.0
     license: MIT
     provenance:

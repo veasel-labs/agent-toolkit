@@ -129,8 +129,12 @@ def validate_entries(entries, resolved=None):
                 errors.append(f"{eid}: relative (bundled) sources must be first-party")
             if not src.get("path"):
                 errors.append(f"{eid}: relative source requires path")
+            if src.get("sha"):
+                errors.append(
+                    f"{eid}: relative (bundled) sources must not declare a sha; "
+                    "content is pinned by this repository's own commit")
         if src.get("type") in ("github", "git-subdir"):
-            if not SHA_RE.match(src.get("sha", "")):
+            if not SHA_RE.match(src.get("sha", "")) or set(src.get("sha", "")) == {"0"}:
                 errors.append(f"{eid}: external source must pin a full 40-char sha")
             if src.get("ref", "") in ("main", "master", "latest", ""):
                 errors.append(f"{eid}: ref must be an immutable tag/sha, not a moving branch")
