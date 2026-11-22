@@ -4,9 +4,17 @@ Borrowed from Cursor Marketplace (manual review of every plugin and
 every update) and Claude Code marketplaces (Git-backed catalog, pinned
 sources), tightened with this repo's provenance rules.
 
-1. **No self-merge for registry changes.** Every `registry/registry.yaml`
-   change — new plugin, version bump, `ref`/`sha` change — requires a
-   PR reviewed by a maintainer who is not the submitter.
+1. **Independent review is the default.** Every community or verified plugin
+   change in `registry/registry.yaml` — new plugin, version bump, `ref`/`sha`
+   change — requires a PR reviewed by a maintainer who is not the submitter.
+   The repository owner may approve a bundled `trust: first-party` entry only
+   when the owner explicitly authorizes the exception in a public governance
+   issue and the approval PR records that issue, validates the bundled
+   manifest/license/permission surface, and passes registry/security tests.
+   Record `reviewed_by` as an owner-approved first-party exception; never
+   imply that an independent reviewer approved it. This narrow exception does
+   not apply to external or community entries, which remain fail-closed until
+   a genuinely distinct maintainer reviews them.
 2. **Pin verification.** Reviewer confirms the pinned `sha` exists in
    the upstream repo at `ref`, that the plugin manifest at that sha
    validates against `schemas/agent-plugins/1.0.0/plugin.schema.json`,
