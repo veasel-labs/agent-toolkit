@@ -178,6 +178,10 @@ def main():
     if resolve:
         resolved = {}
         for e in entries:
+            if src_type(e) == "relative":
+                # Bundled content is pinned by the containing repository's
+                # commit; there is no upstream ref to resolve over GitHub.
+                continue
             sha = resolve_upstream(e)
             if sha:
                 resolved[e["id"]] = sha

@@ -17,6 +17,12 @@ supply-chain audit rules:
   (reviewed external, pinned), `community` (listed with explicit
   opt-in warning in the Veasel Library), `experimental` (never listed
   by default). Tiers gate manifest generation, not just display.
+- **First-party owner exception:** the repository owner can approve a
+  bundled first-party entry only after an explicit public owner decision
+  and a passing review PR that validates its manifest, license, permissions,
+  and generated catalogs. The approval is attributed as an owner exception,
+  never as independent review. Community entries still require a distinct
+  maintainer.
 - **Permission declaration.** Entries declare `shell`, `network`,
   `mcp`, `hooks`, and `dangerous_permissions`. Veasel's Library shows
   exactly this surface at install time and the runtime enforces it;

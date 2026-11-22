@@ -9,5 +9,14 @@
     "name": "veasel-labs",
     "url": "https://github.com/veasel-labs"
   },
-  "plugins": []
+  "plugins": [
+    {
+      "category": "productivity",
+      "description": "",
+      "name": "veasel-essentials",
+      "source": "./plugins/veasel-essentials",
+      "tags": [],
+      "version": "0.1.0"
+    }
+  ]
 }

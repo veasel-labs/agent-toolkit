@@ -57,8 +57,8 @@ plugins:
     license: MIT
     provenance:
       submitted_by: ulises-jeremias
-      reviewed_by: null
-      review: pending-initial-review
+      reviewed_by: ulises-jeremias (owner-approved first-party exception; issue 10)
+      review: approved
     trust: first-party
     permissions:
       shell: false

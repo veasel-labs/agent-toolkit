@@ -107,6 +107,26 @@ class ReviewGateTest(unittest.TestCase):
         errors = validate.validate_entries([bad])
         self.assertTrue(any("reviewed_by" in e for e in errors))
 
+    def test_owner_approved_first_party_entry_is_listed_transparently(self):
+        approved = entry(
+            id="veasel-essentials",
+            trust="first-party",
+            source={"type": "relative", "path": "plugins/veasel-essentials",
+                    "ref": "main"},
+            provenance={
+                "submitted_by": "ulises-jeremias",
+                "reviewed_by": "ulises-jeremias (owner-approved first-party exception; issue 10)",
+                "review": "approved",
+            },
+        )
+
+        self.assertEqual(validate.validate_entries([approved]), [])
+        self.assertTrue(validate.is_installable(approved))
+        self.assertEqual(
+            generate.marketplace([approved], "veasel")["plugins"][0]["source"],
+            "./plugins/veasel-essentials",
+        )
+
 
 class PermissionFlowTest(unittest.TestCase):
     def test_permissions_flow_verbatim_to_veasel_catalog(self):
@@ -188,11 +208,14 @@ class BundledPluginTest(unittest.TestCase):
         errors = validate.validate_entries([zero])
         self.assertTrue(any("40-char sha" in e for e in errors), errors)
 
-    def test_bundled_pending_is_not_installable(self):
+    def test_owner_approved_bundled_plugin_is_installable(self):
         entries = validate.parse_registry(
             (ROOT / "registry" / "registry.yaml").read_text())
         essentials = [e for e in entries if e["id"] == "veasel-essentials"]
         self.assertEqual(len(essentials), 1)
-        self.assertFalse(validate.is_installable(essentials[0]))
-        self.assertNotIn(essentials[0],
-                         generate.listed(entries))
+        self.assertTrue(validate.is_installable(essentials[0]))
+        self.assertIn(essentials[0], generate.listed(entries))
+        self.assertEqual(essentials[0]["trust"], "first-party")
+        self.assertEqual(essentials[0]["provenance"]["review"], "approved")
+        core = next(e for e in entries if e["id"] == "agent-toolkit-core")
+        self.assertFalse(validate.is_installable(core))
