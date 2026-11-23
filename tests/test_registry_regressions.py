@@ -219,3 +219,5 @@ class BundledPluginTest(unittest.TestCase):
         self.assertEqual(essentials[0]["provenance"]["review"], "approved")
         core = next(e for e in entries if e["id"] == "agent-toolkit-core")
         self.assertFalse(validate.is_installable(core))
+        self.assertEqual(core["permissions"]["shell"], "true")
+        self.assertEqual(core["permissions"]["network"], "true")

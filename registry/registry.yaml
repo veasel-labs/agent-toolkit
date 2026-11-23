@@ -37,8 +37,11 @@ plugins:
       review: pending-initial-review
     trust: community
     permissions:
-      shell: false
-      network: false
+      # The pinned plugin starts a SessionStart command hook and its GitHub
+      # MCP server needs network access. Keep the entry non-installable until
+      # an independent reviewer verifies the complete upstream surface.
+      shell: true
+      network: true
       mcp: [github]
       hooks: [session-start-context]
       dangerous_permissions: []
