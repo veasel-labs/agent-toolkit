@@ -10,8 +10,8 @@
         "dangerous_permissions": "[]",
         "hooks": "[session-start-context]",
         "mcp": "[github]",
-        "network": "false",
-        "shell": "false"
+        "network": "true",
+        "shell": "true"
       },
       "review": "pending-initial-review",
       "source": {
