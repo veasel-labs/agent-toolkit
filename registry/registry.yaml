@@ -70,3 +70,26 @@ plugins:
       hooks: []
       dangerous_permissions: []
     targets: [claude-code, veasel]
+  - id: agent-toolkit-creative-studio
+    name: Agent Toolkit Creative Studio (personal collection)
+    description: AI-native creative production skills driving real applications (Kdenlive, Blender, GIMP/Krita/Inkscape, OBS, REAPER, FFmpeg) with editable native projects preserved; published by reference from ulises-jeremias/agent-toolkit (ADR-046). Experimental; Kdenlive path host-verified, other app MCPs documented as experimental upstream.
+    source:
+      type: github
+      repo: ulises-jeremias/agent-toolkit
+      path: plugins/agent-toolkit-creative-studio
+      ref: cc5c60d48c18ff6b5788c08f38f681c933505fbe
+      sha: cc5c60d48c18ff6b5788c08f38f681c933505fbe
+    version: 1.49.0
+    license: MIT
+    provenance:
+      submitted_by: ulises-jeremias
+      reviewed_by: null
+      review: pending-initial-review
+    trust: community
+    permissions:
+      shell: true
+      network: false
+      mcp: [kdenlive]
+      hooks: []
+      dangerous_permissions: []
+    targets: [claude-code, cursor, veasel]  # codex/copilot: format not yet verified, not generated

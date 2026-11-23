@@ -25,6 +25,29 @@
       "version": "1.49.0"
     },
     {
+      "id": "agent-toolkit-creative-studio",
+      "installable": false,
+      "license": "MIT",
+      "opt_in_required": true,
+      "permissions": {
+        "dangerous_permissions": "[]",
+        "hooks": "[]",
+        "mcp": "[kdenlive]",
+        "network": "false",
+        "shell": "true"
+      },
+      "review": "pending-initial-review",
+      "source": {
+        "path": "plugins/agent-toolkit-creative-studio",
+        "ref": "cc5c60d48c18ff6b5788c08f38f681c933505fbe",
+        "repo": "ulises-jeremias/agent-toolkit",
+        "sha": "cc5c60d48c18ff6b5788c08f38f681c933505fbe",
+        "type": "github"
+      },
+      "trust": "community",
+      "version": "1.49.0"
+    },
+    {
       "id": "veasel-essentials",
       "installable": true,
       "license": "MIT",
