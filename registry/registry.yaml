@@ -88,7 +88,7 @@ plugins:
     trust: community
     permissions:
       shell: true
-      network: false
+      network: true
       mcp: [kdenlive]
       hooks: []
       dangerous_permissions: []

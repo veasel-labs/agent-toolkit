@@ -33,7 +33,7 @@
         "dangerous_permissions": "[]",
         "hooks": "[]",
         "mcp": "[kdenlive]",
-        "network": "false",
+        "network": "true",
         "shell": "true"
       },
       "review": "pending-initial-review",
