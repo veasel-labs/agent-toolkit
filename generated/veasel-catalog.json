@@ -39,13 +39,13 @@
       "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-creative-studio",
-        "ref": "cc5c60d48c18ff6b5788c08f38f681c933505fbe",
+        "ref": "v1.50.0",
         "repo": "ulises-jeremias/agent-toolkit",
-        "sha": "cc5c60d48c18ff6b5788c08f38f681c933505fbe",
+        "sha": "6303544045e3fc6ffbc5f085215eececdf7a7789",
         "type": "github"
       },
       "trust": "community",
-      "version": "1.49.0"
+      "version": "1.50.0"
     },
     {
       "id": "veasel-essentials",

@@ -77,9 +77,9 @@ plugins:
       type: github
       repo: ulises-jeremias/agent-toolkit
       path: plugins/agent-toolkit-creative-studio
-      ref: cc5c60d48c18ff6b5788c08f38f681c933505fbe
-      sha: cc5c60d48c18ff6b5788c08f38f681c933505fbe
-    version: 1.49.0
+      ref: v1.50.0
+      sha: 6303544045e3fc6ffbc5f085215eececdf7a7789
+    version: 1.50.0
     license: MIT
     provenance:
       submitted_by: ulises-jeremias
