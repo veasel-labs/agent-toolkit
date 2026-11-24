@@ -221,3 +221,19 @@ class BundledPluginTest(unittest.TestCase):
         self.assertFalse(validate.is_installable(core))
         self.assertEqual(core["permissions"]["shell"], "true")
         self.assertEqual(core["permissions"]["network"], "true")
+
+    def test_creative_studio_network_capability_is_disclosed_but_pending(self):
+        entries = validate.parse_registry(
+            (ROOT / "registry" / "registry.yaml").read_text())
+        creative = next(e for e in entries
+                        if e["id"] == "agent-toolkit-creative-studio")
+        self.assertEqual(creative["permissions"]["network"], "true")
+        self.assertEqual(creative["provenance"]["review"],
+                         "pending-initial-review")
+        self.assertFalse(validate.is_installable(creative))
+
+        catalog = generate.veasel_catalog(entries)
+        generated = next(p for p in catalog["plugins"]
+                         if p["id"] == "agent-toolkit-creative-studio")
+        self.assertEqual(generated["permissions"]["network"], "true")
+        self.assertFalse(generated["installable"])
