@@ -43,7 +43,9 @@ def entry(**overrides):
                         "mcp": "[]", "hooks": "[]",
                         "dangerous_permissions": "[]"},
         "provenance": {"submitted_by": "alice", "reviewed_by": "bob",
-                       "review": "approved"},
+                       "review": "approved", "reviewed_at": "2026-11-25",
+                       "reviewed_source_sha": SHA_A,
+                       "review_evidence": "https://github.com/example/registry/pull/42"},
     }
     base.update(overrides)
     return base
@@ -106,6 +108,44 @@ class ReviewGateTest(unittest.TestCase):
                                 "review": "approved"})
         errors = validate.validate_entries([bad])
         self.assertTrue(any("reviewed_by" in e for e in errors))
+
+    def test_approved_external_source_requires_exact_review_binding(self):
+        approved = entry(provenance={
+            "submitted_by": "alice", "reviewed_by": "bob",
+            "review": "approved", "reviewed_at": "2026-11-25",
+            "reviewed_source_sha": SHA_A,
+            "review_evidence": "https://github.com/example/registry/pull/42",
+        })
+        self.assertEqual(validate.validate_entries([approved]), [])
+        approved["source"]["sha"] = SHA_B
+        errors = validate.validate_entries([approved])
+        self.assertTrue(any("reviewed_source_sha" in e for e in errors), errors)
+
+    def test_external_approval_without_public_evidence_fails(self):
+        approved = entry()
+        approved["provenance"].pop("review_evidence")
+        errors = validate.validate_entries([approved])
+        self.assertTrue(any("public GitHub PR/issue review evidence" in e
+                            for e in errors), errors)
+
+    def test_duplicate_provenance_key_fails_closed(self):
+        text = """plugins:
+  - id: demo-plugin
+    provenance:
+      reviewed_source_sha: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      reviewed_source_sha: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+"""
+        parsed = validate.parse_registry(text)
+        errors = validate.validate_entries(parsed)
+        self.assertTrue(any("duplicate provenance.reviewed_source_sha" in e
+                            for e in errors), errors)
+
+    def test_review_evidence_rejects_url_suffix(self):
+        approved = entry()
+        approved["provenance"]["review_evidence"] += "/unexpected"
+        errors = validate.validate_entries([approved])
+        self.assertTrue(any("public GitHub PR/issue review evidence" in e
+                            for e in errors), errors)
 
     def test_owner_approved_first_party_entry_is_listed_transparently(self):
         approved = entry(
