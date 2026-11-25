@@ -41,7 +41,10 @@ def entry(**overrides):
                    "ref": "v1.0.0", "sha": SHA_A},
         "permissions": {"shell": "false", "network": "false",
                         "mcp": "[]", "hooks": "[]",
-                        "dangerous_permissions": "[]"},
+                        "dangerous_permissions": "[]",
+                        "executables": "[]", "mcp_images": "[]",
+                        "credential_scopes": "[]", "mutation_surface": "[]",
+                        "allowed_roots": "[]", "hook_commands": "[]"},
         "provenance": {"submitted_by": "alice", "reviewed_by": "bob",
                        "review": "approved", "reviewed_at": "2026-11-25",
                        "reviewed_source_sha": SHA_A,
@@ -185,6 +188,49 @@ class PermissionFlowTest(unittest.TestCase):
         del bad["permissions"]["network"]
         errors = validate.validate_entries([bad])
         self.assertTrue(any("permissions.network" in e for e in errors))
+
+    def test_mcp_requires_auditable_execution_and_mutation_surface(self):
+        bad = entry()
+        bad["permissions"].update({
+            "network": "true",
+            "mcp": "[github]",
+            "executables": "[]",
+            "mcp_images": "[]",
+            "credential_scopes": "[]",
+            "mutation_surface": "[]",
+        })
+        errors = validate.validate_entries([bad])
+        self.assertTrue(any("executables audit field" in e for e in errors), errors)
+        self.assertTrue(any("mcp_images audit field" in e for e in errors), errors)
+        self.assertTrue(any("mutation_surface audit field" in e for e in errors), errors)
+        self.assertTrue(any("credential_scopes audit field" in e for e in errors), errors)
+
+    def test_kdenlive_requires_allowed_roots(self):
+        bad = entry()
+        bad["permissions"].update({
+            "network": "true",
+            "mcp": "[kdenlive]",
+            "executables": "[uvx, kdenlive-mcp]",
+            "mcp_images": "[git+https://example.invalid/kdenlive@sha]",
+            "credential_scopes": "[none]",
+            "mutation_surface": "[project files]",
+        })
+        errors = validate.validate_entries([bad])
+        self.assertTrue(any("allowed_roots audit field" in e for e in errors), errors)
+
+    def test_live_external_mcp_entries_record_audit_fields(self):
+        entries = validate.parse_registry(
+            (ROOT / "registry" / "registry.yaml").read_text())
+        for plugin_id in ("agent-toolkit-core", "agent-toolkit-creative-studio"):
+            plugin = next(e for e in entries if e["id"] == plugin_id)
+            permissions = plugin["permissions"]
+            for key in ("executables", "mcp_images", "credential_scopes", "mutation_surface"):
+                self.assertTrue(permissions.get(key), f"{plugin_id}: missing {key}")
+            if plugin_id.endswith("creative-studio"):
+                self.assertIn("CREATIVE_PROJECT_ROOT", permissions["allowed_roots"])
+        core = next(e for e in entries if e["id"] == "agent-toolkit-core")
+        self.assertIn("floating", core["permissions"]["mcp_images"])
+        self.assertFalse(validate.is_installable(core))
 
 
 class InvalidStructureTest(unittest.TestCase):
