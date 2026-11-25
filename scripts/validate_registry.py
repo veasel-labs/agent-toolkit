@@ -36,7 +36,7 @@ def parse_registry(text):
         m = re.match(r"^  - id: (.+)$", line)
         if m:
             current = {"id": m.group(1).strip(), "source": {},
-                       "permissions": {}, "provenance": {}}
+                       "permissions": {}, "provenance": {}, "parse_errors": []}
             entries.append(current)
             section = None
             continue
@@ -65,8 +65,11 @@ def parse_registry(text):
         if m and section == "permissions":
             current["permissions"][m.group(1)] = m.group(2).strip()
             continue
-        m = re.match(r"^      (submitted_by|reviewed_by|review): (.+)$", line)
+        m = re.match(r"^      (submitted_by|reviewed_by|review|reviewed_at|reviewed_source_sha|review_evidence): (.+)$", line)
         if m and section == "provenance":
+            if m.group(1) in current["provenance"]:
+                current["parse_errors"].append(
+                    f"duplicate provenance.{m.group(1)} key")
             current["provenance"][m.group(1)] = m.group(2).strip()
     return entries
 
@@ -89,6 +92,8 @@ def validate_entries(entries, resolved=None):
     seen = set()
     for e in entries:
         eid = e.get("id", "?")
+        for parse_error in e.get("parse_errors", []):
+            errors.append(f"{eid}: {parse_error}")
         if not ID_RE.match(eid):
             errors.append(f"{eid}: id must be kebab-case")
         if eid in seen:
@@ -116,6 +121,19 @@ def validate_entries(entries, resolved=None):
                 f"(got {review!r}); only bundled relative sources may stay pending")
         if review == "approved" and prov.get("reviewed_by") in (None, "", "null"):
             errors.append(f"{eid}: approved entries must name provenance.reviewed_by")
+        # An external approval is valid only for the exact immutable source
+        # reviewed. This is deliberately separate from the bundled owner
+        # exception, whose source is pinned by this repository's commit.
+        if review == "approved" and src_type(e) in ("github", "git-subdir"):
+            if prov.get("reviewed_source_sha") != e.get("source", {}).get("sha"):
+                errors.append(
+                    f"{eid}: approved external entries must bind provenance.reviewed_source_sha "
+                    "to source.sha")
+            if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", prov.get("reviewed_at", "")):
+                errors.append(f"{eid}: approved external entries require provenance.reviewed_at (YYYY-MM-DD)")
+            evidence = prov.get("review_evidence", "")
+            if not re.fullmatch(r"https://github\.com/[^/]+/[^/]+/(pull|issues)/\d+(#issuecomment-\d+)?", evidence):
+                errors.append(f"{eid}: approved external entries require public GitHub PR/issue review evidence")
         perms = e.get("permissions", {})
         for key in ("shell", "network", "mcp", "hooks", "dangerous_permissions"):
             if key not in perms:

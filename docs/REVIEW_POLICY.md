@@ -19,6 +19,11 @@ sources), tightened with this repo's provenance rules.
    the upstream repo at `ref`, that the plugin manifest at that sha
    validates against `schemas/agent-plugins/1.0.0/plugin.schema.json`,
    and that the declared `license` matches the upstream repo.
+   An approved external entry must record `reviewed_source_sha` equal to
+   `source.sha`, `reviewed_at`, and a public GitHub PR or issue URL in
+   `review_evidence`. Any pin change invalidates the recorded approval until
+   the new source is reviewed and all three fields are updated. These fields
+   do not apply to the owner-approved bundled first-party exception.
 3. **Permission surface.** Reviewer lists every MCP server, hook, and
    executable the plugin declares. Anything undisclosed is grounds for
    rejection. Veasel shows this same surface at install time; the
