@@ -45,6 +45,15 @@ plugins:
       mcp: [github]
       hooks: [session-start-context]
       dangerous_permissions: []
+      executables: [bash, docker, ghcr.io/github/github-mcp-server]
+      # mcp.json is digest-pinned; the legacy .mcp.json at this immutable
+      # upstream tag still floats. This explicit finding is why the entry
+      # remains pending rather than being silently treated as safe.
+      mcp_images: [mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server (floating)]
+      credential_scopes: [GITHUB_PERSONAL_ACCESS_TOKEN; PAT scopes are supplied by the user and are not constrained by the plugin]
+      mutation_surface: [GitHub MCP tools may read or write repositories/issues/pull requests according to PAT scope; no plugin-level read-only allowlist]
+      allowed_roots: []
+      hook_commands: [bash hooks/scripts/session-start-context.sh; 5s timeout; stdout-only context probe]
     targets: [claude-code, cursor, veasel]  # codex/copilot: format not yet verified, not generated
   - id: veasel-essentials
     name: Veasel Essentials (official, bundled)
@@ -92,4 +101,10 @@ plugins:
       mcp: [kdenlive]
       hooks: []
       dangerous_permissions: []
+      executables: [uvx, kdenlive-mcp]
+      mcp_images: [git+https://github.com/mhbxyz/kdenlive-mcp@9abcf9474a434f2e00a9c458f0ff70c92fbc16d8#kdenlive-mcp]
+      credential_scopes: [none declared; upstream process may access local Kdenlive project files]
+      mutation_surface: [read/edit/render Kdenlive project files; upstream subprocess tools are pre-alpha and require independent review]
+      allowed_roots: [${CREATIVE_PROJECT_ROOT}; interpolation/default behavior requires independent review]
+      hook_commands: []
     targets: [claude-code, cursor, veasel]  # codex/copilot: format not yet verified, not generated

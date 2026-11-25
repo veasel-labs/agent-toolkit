@@ -28,6 +28,11 @@ REVIEW_STATES = {"pending-initial-review", "pending-update-review", "approved", 
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 SPDX_RE = re.compile(r"^[A-Za-z0-9.+-]+$")
+PERMISSION_KEYS = (
+    "shell", "network", "mcp", "hooks", "dangerous_permissions",
+    "executables", "mcp_images", "credential_scopes", "mutation_surface",
+    "allowed_roots", "hook_commands",
+)
 
 
 def parse_registry(text):
@@ -61,7 +66,7 @@ def parse_registry(text):
         if m and section == "source":
             current["source"][m.group(1)] = m.group(2).strip()
             continue
-        m = re.match(r"^      (shell|network|mcp|hooks|dangerous_permissions): (.+)$", line)
+        m = re.match(r"^      (" + "|".join(PERMISSION_KEYS) + r"): (.+)$", line)
         if m and section == "permissions":
             current["permissions"][m.group(1)] = m.group(2).strip()
             continue
@@ -141,6 +146,24 @@ def validate_entries(entries, resolved=None):
         for key in ("shell", "network"):
             if key in perms and perms[key] not in ("true", "false"):
                 errors.append(f"{eid}: permissions.{key} must be true/false")
+        # A boolean MCP/network declaration is not enough to review a plugin:
+        # record the executable, immutable image/source, credential input and
+        # mutation boundary that a maintainer actually inspected. Keep these
+        # requirements fail-closed for real MCP entries while allowing the
+        # small synthetic entries used by pure validator tests.
+        empty_decl = lambda value: value in (None, "", "[]", "null")
+        mcp_declared = not empty_decl(perms.get("mcp", "[]"))
+        if mcp_declared:
+            for key in ("executables", "mcp_images", "mutation_surface"):
+                if empty_decl(perms.get(key)):
+                    errors.append(f"{eid}: MCP permissions.{key} audit field is required")
+            if perms.get("network") == "true" and empty_decl(perms.get("credential_scopes")):
+                errors.append(f"{eid}: networked MCP permissions.credential_scopes audit field is required")
+            if "kdenlive" in perms.get("mcp", "").lower() and empty_decl(perms.get("allowed_roots")):
+                errors.append(f"{eid}: Kdenlive MCP permissions.allowed_roots audit field is required")
+        hooks_declared = perms.get("hooks", "[]") not in ("[]", "", "null")
+        if hooks_declared and empty_decl(perms.get("hook_commands")):
+            errors.append(f"{eid}: hook permissions.hook_commands audit field is required")
         src = e.get("source", {})
         if src.get("type") == "relative":
             if trust != "first-party":

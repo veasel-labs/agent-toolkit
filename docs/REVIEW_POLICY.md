@@ -24,10 +24,13 @@ sources), tightened with this repo's provenance rules.
    `review_evidence`. Any pin change invalidates the recorded approval until
    the new source is reviewed and all three fields are updated. These fields
    do not apply to the owner-approved bundled first-party exception.
-3. **Permission surface.** Reviewer lists every MCP server, hook, and
-   executable the plugin declares. Anything undisclosed is grounds for
-   rejection. Veasel shows this same surface at install time; the
-   catalog never widens it.
+3. **Permission surface.** Reviewer lists every MCP server, hook, executable,
+   image/source pin, credential input, allowed root, and mutating operation
+   the plugin declares. Registry entries must populate the corresponding
+   `permissions.executables`, `mcp_images`, `credential_scopes`,
+   `mutation_surface`, `allowed_roots`, and `hook_commands` audit fields.
+   Anything undisclosed is grounds for rejection. Veasel shows this same
+   surface at install time; the catalog never widens it.
 4. **No source duplication.** Community plugins are referenced, never
    vendored. Curated official plugins live under `plugins/` in this
    repo and follow the same manifest + test rules.

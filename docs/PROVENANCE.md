@@ -27,6 +27,21 @@ supply-chain audit rules:
   `mcp`, `hooks`, and `dangerous_permissions`. Veasel's Library shows
   exactly this surface at install time and the runtime enforces it;
   the catalog can narrow but never widen what a plugin asks for.
+- **Executable and mutation audit.** Any entry that declares an MCP server
+  also records `executables`, `mcp_images`, `mutation_surface`, and (when it
+  uses the network) `credential_scopes`. Kdenlive-style integrations must
+  record `allowed_roots`; command hooks must record `hook_commands`. These
+  fields describe what the pinned upstream actually declares, including
+  unresolved risk such as a floating legacy client config or an
+  unconstrained personal token. They are review evidence, not permissions
+  granted by the marketplace. Missing fields fail validation, and pending
+  entries remain non-installable.
+- **Digest consistency.** A plugin cannot be approved merely because one
+  generated MCP config uses a digest. Every client config at the reviewed
+  upstream SHA must be checked. If a legacy config still uses a floating
+  image or source, the registry records that fact and keeps the entry
+  `pending-initial-review` until upstream publishes a corrected immutable
+  release and an independent maintainer reviews it.
 - **Drift detection.** A scheduled job (issue tracked in this repo)
   compares pinned shas against upstream release tags and opens a
   version-bump PR; bumps get the same human review as new listings

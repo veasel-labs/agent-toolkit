@@ -7,9 +7,15 @@
       "license": "MIT",
       "opt_in_required": true,
       "permissions": {
+        "allowed_roots": "[]",
+        "credential_scopes": "[GITHUB_PERSONAL_ACCESS_TOKEN; PAT scopes are supplied by the user and are not constrained by the plugin]",
         "dangerous_permissions": "[]",
+        "executables": "[bash, docker, ghcr.io/github/github-mcp-server]",
+        "hook_commands": "[bash hooks/scripts/session-start-context.sh; 5s timeout; stdout-only context probe]",
         "hooks": "[session-start-context]",
         "mcp": "[github]",
+        "mcp_images": "[mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server (floating)]",
+        "mutation_surface": "[GitHub MCP tools may read or write repositories/issues/pull requests according to PAT scope; no plugin-level read-only allowlist]",
         "network": "true",
         "shell": "true"
       },
@@ -30,9 +36,15 @@
       "license": "MIT",
       "opt_in_required": true,
       "permissions": {
+        "allowed_roots": "[${CREATIVE_PROJECT_ROOT}; interpolation/default behavior requires independent review]",
+        "credential_scopes": "[none declared; upstream process may access local Kdenlive project files]",
         "dangerous_permissions": "[]",
+        "executables": "[uvx, kdenlive-mcp]",
+        "hook_commands": "[]",
         "hooks": "[]",
         "mcp": "[kdenlive]",
+        "mcp_images": "[git+https://github.com/mhbxyz/kdenlive-mcp@9abcf9474a434f2e00a9c458f0ff70c92fbc16d8#kdenlive-mcp]",
+        "mutation_surface": "[read/edit/render Kdenlive project files; upstream subprocess tools are pre-alpha and require independent review]",
         "network": "true",
         "shell": "true"
       },
