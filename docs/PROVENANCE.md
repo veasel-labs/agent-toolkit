@@ -25,26 +25,26 @@ supply-chain audit rules:
   maintainer.
 - **Permission declaration.** Entries declare `shell`, `network`,
   `mcp`, `hooks`, and `dangerous_permissions`. Veasel's Library shows
-  exactly this surface at install time and the runtime enforces it;
+  exactly this surface at install time and the Veasel runtime enforces it;
   the catalog can narrow but never widen what a plugin asks for.
 - **Executable and mutation audit.** Any entry that declares an MCP server
   also records `executables`, `mcp_images`, `mutation_surface`, and (when it
   uses the network) `credential_scopes`. Kdenlive-style integrations must
   record `allowed_roots`; command hooks must record `hook_commands`. These
   fields describe what the pinned upstream actually declares, including
-  unresolved risk such as a floating legacy client config or an
-  unconstrained personal token. They are review evidence, not permissions
+  risks such as an unconstrained personal token or broad mutation surface.
+  They are review evidence, not permissions
   granted by the marketplace. Missing fields fail validation, and pending
   entries remain non-installable.
 - **Digest consistency.** A plugin cannot be approved merely because one
   generated MCP config uses a digest. Every client config at the reviewed
-  upstream SHA must be checked. If a legacy config still uses a floating
-  image or source, the registry records that fact and keeps the entry
-  `pending-initial-review` until upstream publishes a corrected immutable
-  release and an independent maintainer reviews it.
+  upstream SHA must be checked. The registry records each observed image or
+  source reference and keeps entries `pending-*` until an independent
+  maintainer reviews the complete permission, credential, hook, and mutation
+  surface. A fixed digest does not itself approve a plugin.
 - **Drift detection.** A scheduled job (issue tracked in this repo)
-  compares pinned shas against upstream release tags and opens a
-  version-bump PR; bumps get the same human review as new listings
-  (Cursor-style review-per-update). Nothing auto-updates a pin.
+  compares pinned SHAs against upstream semantic-version tags and plugin
+  manifests, then opens a version-bump PR; bumps get the same human review as
+  new listings (Cursor-style review-per-update). No pin is auto-merged.
 - **Revocation** flips `review: revoked` (see REVIEW_POLICY.md);
   generated manifests exclude revoked entries on next generation.

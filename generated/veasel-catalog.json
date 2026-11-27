@@ -14,7 +14,7 @@
         "hook_commands": "[bash hooks/scripts/session-start-context.sh; 5s timeout; stdout-only context probe]",
         "hooks": "[session-start-context]",
         "mcp": "[github]",
-        "mcp_images": "[mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server (floating)]",
+        "mcp_images": "[mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699]",
         "mutation_surface": "[GitHub MCP tools may read or write repositories/issues/pull requests according to PAT scope; no plugin-level read-only allowlist]",
         "network": "true",
         "shell": "true"
@@ -22,13 +22,13 @@
       "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-core",
-        "ref": "v1.49.0",
+        "ref": "v1.51.1",
         "repo": "ulises-jeremias/agent-toolkit",
-        "sha": "7bd44a7b4cc64afc4908b49977589666c1978920",
+        "sha": "907fe81e08bd86d396c7410597ebf41939836d40",
         "type": "github"
       },
       "trust": "community",
-      "version": "1.49.0"
+      "version": "1.51.1"
     },
     {
       "id": "agent-toolkit-creative-studio",
@@ -51,13 +51,13 @@
       "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-creative-studio",
-        "ref": "v1.50.0",
+        "ref": "v1.51.1",
         "repo": "ulises-jeremias/agent-toolkit",
-        "sha": "6303544045e3fc6ffbc5f085215eececdf7a7789",
+        "sha": "907fe81e08bd86d396c7410597ebf41939836d40",
         "type": "github"
       },
       "trust": "community",
-      "version": "1.50.0"
+      "version": "1.51.1"
     },
     {
       "id": "veasel-essentials",
