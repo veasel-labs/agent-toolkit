@@ -65,6 +65,7 @@ class RegistryTest(unittest.TestCase):
                 "marketplace must never publish unreviewed entries")
             entry = by_id[plugin["name"]]
             self.assertEqual(plugin["version"], entry["version"])
+            self.assertEqual(plugin["description"], entry["description"])
             src = plugin["source"]
             if isinstance(src, dict) and src.get("source") == "github":
                 self.assertEqual(src["sha"], entry["source"]["sha"])

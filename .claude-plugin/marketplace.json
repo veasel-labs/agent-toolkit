@@ -12,7 +12,7 @@
   "plugins": [
     {
       "category": "productivity",
-      "description": "",
+      "description": "Minimal official plugin with the output-handshake skill; usable fully offline. See docs/OFFLINE_SKILLS.md.",
       "name": "veasel-essentials",
       "source": "./plugins/veasel-essentials",
       "tags": [],
