@@ -47,7 +47,7 @@ def parse_registry(text):
             continue
         if current is None:
             continue
-        m = re.match(r"^    (version|license|trust): (.+)$", line)
+        m = re.match(r"^    (description|version|license|trust): (.+)$", line)
         if m:
             current[m.group(1)] = m.group(2).strip()
             continue
