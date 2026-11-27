@@ -8,11 +8,15 @@
 
 Run: python3 -m unittest discover -s tests -v
 """
+import contextlib
 import copy
-import json
 import importlib.util
+import io
+import json
 import pathlib
+import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -71,6 +75,22 @@ class PinResolutionTest(unittest.TestCase):
         errors = validate.validate_entries([bad])
         self.assertTrue(any("40-char" in e for e in errors))
         self.assertTrue(any("immutable" in e for e in errors))
+
+    def test_resolve_mode_fails_when_external_ref_cannot_be_resolved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            stderr = io.StringIO()
+            root = pathlib.Path(directory)
+            (root / "registry").mkdir()
+            (root / "registry" / "registry.yaml").write_text("plugins: []\n")
+            with (
+                patch.object(validate, "ROOT", root),
+                patch.object(validate, "parse_registry", return_value=[entry()]),
+                patch.object(validate, "resolve_upstream", return_value=None),
+                patch.object(validate.sys, "argv", ["validate_registry.py", "--resolve"]),
+                contextlib.redirect_stderr(stderr),
+            ):
+                self.assertEqual(validate.main(), 1)
+            self.assertIn("could not resolve upstream ref 'v1.0.0'", stderr.getvalue())
 
 
 class ReviewGateTest(unittest.TestCase):

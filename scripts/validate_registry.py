@@ -216,6 +216,7 @@ def main():
     resolve = "--resolve" in sys.argv
     entries = parse_registry((ROOT / "registry" / "registry.yaml").read_text())
     resolved = None
+    resolution_errors = []
     if resolve:
         resolved = {}
         for e in entries:
@@ -227,8 +228,10 @@ def main():
             if sha:
                 resolved[e["id"]] = sha
             else:
-                print(f"warn: {e['id']}: could not resolve upstream ref", file=sys.stderr)
-    errors = validate_entries(entries, resolved=resolved)
+                resolution_errors.append(
+                    f"{e['id']}: could not resolve upstream ref "
+                    f"{e.get('source', {}).get('ref', '')!r}")
+    errors = resolution_errors + validate_entries(entries, resolved=resolved)
     # Generated client manifests must never publish unreviewed entries.
     market_path = ROOT / ".claude-plugin" / "marketplace.json"
     if market_path.is_file():
