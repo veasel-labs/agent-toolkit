@@ -12,7 +12,7 @@
 #   name        display name
 #   description one line
 #   source      { type: github|git-subdir|relative, repo?, url?, path?, ref, sha }
-#               sha MUST be the resolved commit of ref (annotated tag -> its target commit, e.g. v1.49.0 -> 7bd44a7b...), verified with `gh api repos/<repo>/git/ref/tags/<ref>`; never a later main HEAD
+#               sha MUST be the resolved commit of ref (annotated tag -> its target commit, e.g. v1.51.1 -> 907fe81e...), verified with `gh api repos/<repo>/git/ref/tags/<ref>`; never a later main HEAD
 #               relative = curated plugin bundled in THIS repo under plugins/
 #   version     upstream plugin version at the pinned sha
 #   license     SPDX id as declared by upstream (verified at review)
@@ -27,9 +27,9 @@ plugins:
       type: github
       repo: ulises-jeremias/agent-toolkit
       path: plugins/agent-toolkit-core
-      ref: v1.49.0
-      sha: 7bd44a7b4cc64afc4908b49977589666c1978920
-    version: 1.49.0
+      ref: v1.51.1
+      sha: 907fe81e08bd86d396c7410597ebf41939836d40
+    version: 1.51.1
     license: MIT
     provenance:
       submitted_by: ulises-jeremias
@@ -46,10 +46,10 @@ plugins:
       hooks: [session-start-context]
       dangerous_permissions: []
       executables: [bash, docker, ghcr.io/github/github-mcp-server]
-      # mcp.json is digest-pinned; the legacy .mcp.json at this immutable
-      # upstream tag still floats. This explicit finding is why the entry
-      # remains pending rather than being silently treated as safe.
-      mcp_images: [mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server (floating)]
+      # Both MCP client configs at v1.51.1 pin the same digest. The plugin
+      # remains pending until its complete permission and hook surface gets
+      # an independent review.
+      mcp_images: [mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699, .mcp.json=ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699]
       credential_scopes: [GITHUB_PERSONAL_ACCESS_TOKEN; PAT scopes are supplied by the user and are not constrained by the plugin]
       mutation_surface: [GitHub MCP tools may read or write repositories/issues/pull requests according to PAT scope; no plugin-level read-only allowlist]
       allowed_roots: []
@@ -86,9 +86,9 @@ plugins:
       type: github
       repo: ulises-jeremias/agent-toolkit
       path: plugins/agent-toolkit-creative-studio
-      ref: v1.50.0
-      sha: 6303544045e3fc6ffbc5f085215eececdf7a7789
-    version: 1.50.0
+      ref: v1.51.1
+      sha: 907fe81e08bd86d396c7410597ebf41939836d40
+    version: 1.51.1
     license: MIT
     provenance:
       submitted_by: ulises-jeremias

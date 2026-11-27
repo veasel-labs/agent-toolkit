@@ -249,8 +249,21 @@ class PermissionFlowTest(unittest.TestCase):
             if plugin_id.endswith("creative-studio"):
                 self.assertIn("CREATIVE_PROJECT_ROOT", permissions["allowed_roots"])
         core = next(e for e in entries if e["id"] == "agent-toolkit-core")
-        self.assertIn("floating", core["permissions"]["mcp_images"])
+        digest = "ghcr.io/github/github-mcp-server@sha256:fbec75de11c255213fa08d80fb166abe73d851fff631c51c0079872967720699"
+        self.assertEqual(core["permissions"]["mcp_images"].count(digest), 2)
         self.assertFalse(validate.is_installable(core))
+
+    def test_personal_toolkit_plugin_pins_match_reviewed_tag_metadata(self):
+        entries = validate.parse_registry(
+            (ROOT / "registry" / "registry.yaml").read_text())
+        expected_sha = "907fe81e08bd86d396c7410597ebf41939836d40"
+        for plugin_id in ("agent-toolkit-core", "agent-toolkit-creative-studio"):
+            plugin = next(e for e in entries if e["id"] == plugin_id)
+            self.assertEqual(plugin["source"]["repo"], "ulises-jeremias/agent-toolkit")
+            self.assertEqual(plugin["source"]["ref"], "v1.51.1")
+            self.assertEqual(plugin["source"]["sha"], expected_sha)
+            self.assertEqual(plugin["version"], "1.51.1")
+            self.assertEqual(plugin["provenance"]["review"], "pending-initial-review")
 
 
 class InvalidStructureTest(unittest.TestCase):
