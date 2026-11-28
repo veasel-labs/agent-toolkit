@@ -85,6 +85,10 @@ def veasel_catalog(entries):
             "opt_in_required": e.get("trust") == "community",
             "source": e.get("source", {}),
             "permissions": e.get("permissions", {}),
+            # Preserve the review chain in Veasel's generated catalog so
+            # consumers can display why an entry is trusted and bind any
+            # approval to its exact upstream source.
+            "provenance": e.get("provenance", {}),
         })
     return {"name": "veasel", "version": 1, "plugins": plugins}
 

@@ -72,10 +72,13 @@ def parse_registry(text):
             continue
         m = re.match(r"^      (submitted_by|reviewed_by|review|reviewed_at|reviewed_source_sha|review_evidence): (.+)$", line)
         if m and section == "provenance":
+            value = m.group(2).strip()
+            if value == "null":
+                value = None
             if m.group(1) in current["provenance"]:
                 current["parse_errors"].append(
                     f"duplicate provenance.{m.group(1)} key")
-            current["provenance"][m.group(1)] = m.group(2).strip()
+            current["provenance"][m.group(1)] = value
     return entries
 
 

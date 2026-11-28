@@ -115,6 +115,8 @@ class ReviewGateTest(unittest.TestCase):
         self.assertFalse(catalog["plugins"][0]["installable"])
         self.assertEqual(catalog["plugins"][0]["review"],
                          "pending-initial-review")
+        self.assertEqual(catalog["plugins"][0]["provenance"],
+                         pending["provenance"])
 
     def test_revoked_excluded_everywhere(self):
         revoked = entry(provenance={"submitted_by": "alice",
@@ -202,6 +204,12 @@ class PermissionFlowTest(unittest.TestCase):
         catalog2 = generate.veasel_catalog([changed])
         self.assertNotEqual(catalog["plugins"][0]["permissions"],
                             catalog2["plugins"][0]["permissions"])
+
+    def test_review_provenance_flows_verbatim_to_veasel_catalog(self):
+        e = entry()
+        catalog = generate.veasel_catalog([e])
+        self.assertEqual(catalog["plugins"][0]["provenance"],
+                         e["provenance"])
 
     def test_missing_permission_declaration_fails(self):
         bad = entry()

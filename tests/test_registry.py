@@ -70,6 +70,18 @@ class RegistryTest(unittest.TestCase):
             if isinstance(src, dict) and src.get("source") == "github":
                 self.assertEqual(src["sha"], entry["source"]["sha"])
 
+    def test_veasel_catalog_preserves_registry_provenance(self):
+        catalog = json.loads(
+            (ROOT / "generated" / "veasel-catalog.json").read_text())
+        by_id = {e["id"]: e for e in registry_entries()}
+        for plugin in catalog["plugins"]:
+            self.assertEqual(plugin["provenance"],
+                             by_id[plugin["id"]]["provenance"])
+
+        pending = next(p for p in catalog["plugins"]
+                       if p["review"] != "approved")
+        self.assertIsNone(pending["provenance"]["reviewed_by"])
+
     def test_copied_schemas_present(self):
         for rel in [
             "schemas/agent-plugins/1.0.0/plugin.schema.json",

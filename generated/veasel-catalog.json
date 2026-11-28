@@ -19,6 +19,11 @@
         "network": "true",
         "shell": "true"
       },
+      "provenance": {
+        "review": "pending-initial-review",
+        "reviewed_by": null,
+        "submitted_by": "ulises-jeremias"
+      },
       "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-core",
@@ -48,6 +53,11 @@
         "network": "true",
         "shell": "true"
       },
+      "provenance": {
+        "review": "pending-initial-review",
+        "reviewed_by": null,
+        "submitted_by": "ulises-jeremias"
+      },
       "review": "pending-initial-review",
       "source": {
         "path": "plugins/agent-toolkit-creative-studio",
@@ -70,6 +80,11 @@
         "mcp": "[]",
         "network": "false",
         "shell": "false"
+      },
+      "provenance": {
+        "review": "approved",
+        "reviewed_by": "ulises-jeremias (owner-approved first-party exception; issue 10)",
+        "submitted_by": "ulises-jeremias"
       },
       "review": "approved",
       "source": {
